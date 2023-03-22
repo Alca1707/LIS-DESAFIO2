@@ -10,9 +10,6 @@ include('header.php');
   <li class="nav-item">
     <a class="nav-link" href="ejercicio2.php">Ejercicio 2</a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link" href="ejercicio3.php">Ejercicio 3</a>
-  </li>
 </ul>
 
 <?php
