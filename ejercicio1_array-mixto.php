@@ -39,7 +39,7 @@ foreach ($alumnos as $nivel => $alumnos_nivel) {
     echo '</tr>';
 }
 
-echo '</tbody></table>';
+echo '</tbody></table></div>';
 
 include('footer.php');
 ?>

@@ -35,7 +35,7 @@ foreach ($alumnosA as $nivel_key => $alumnos) {
     echo '</tr>';
 }
 
-echo '</tbody></table>';
+echo '</tbody></table></div>';
 
 include('footer.php');
 ?>
