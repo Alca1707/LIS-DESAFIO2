@@ -71,6 +71,11 @@ function validateData($titulo, $numeroEdicion, $ciudad, $editorial, $edicion_Yea
     $errorMessage .= regexValidation($digits, $numero_Paginas, 'número de página', 'deben ser solo digitos');
     $errorMessage .= regexValidation($digits, $edicion_Year, 'año de edición', 'deben ser solo digitos');
     $errorMessage .= regexValidation($digits, $numeroEdicion, 'número de edición', 'deben ser solo digitos');
+    $errorMessage .= regexValidation($digits, $isbn, 'ISBN', 'deben ser solo digitos');
+
+    if (strlen((string)$isbn) != 13) {
+        $errorMessage .= 'El ISBN debe de ser 13 digitos de largo.<br>';
+    }
 
     if ($autores == null) {
         $errorMessage .= "Debe seleccionar al menos un autor. <br>";
@@ -106,8 +111,12 @@ $_SESSION['books'] = $books;
         <label for="apellidos">Apellidos del autor</label>
     </div>
 
-    <div class="d-grid gap-2 col-6 mx-auto">
-        <input type="reset" value="Agregar autor" id="agregarAutor" class="btn btn-outline-dark fw-bold text-uppercase mt-3" name="agregar">
+    <div class="d-flex justify-content-end">
+        <div class="row">
+            <div class="col-12">
+                    <input type="reset" value="Agregar autor" id="agregarAutor" class="btn btn-outline-dark fw-bold text-uppercase mt-3 px-5" name="agregar">
+            </div>
+        </div>
     </div>
 
 
@@ -149,7 +158,7 @@ $_SESSION['books'] = $books;
     </div>
 
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="isbn" placeholder="2837 2189 31321" name="isbn">
+        <input type="number" class="form-control" id="isbn" placeholder="2837 2189 31321" name="isbn">
         <label for="isbn">ISBN</label>
     </div>
 
@@ -158,8 +167,12 @@ $_SESSION['books'] = $books;
         </select>
     </div>
 
-    <div class="d-grid gap-2 col-6 mx-auto">
-        <input type="submit" value="Agregar registro" class="btn btn-outline-dark fw-bold text-uppercase mt-3" name="enviar">
+    <div class="d-flex justify-content-end">
+        <div class="row">
+<div class="col-12">
+    <input type="submit" value="Agregar registro" class="btn btn-outline-dark fw-bold text-uppercase mt-3 px-5" name="enviar">
+</div>
+</div>
     </div>
 </form>
 </div>

@@ -17,6 +17,7 @@ include('header.php');
     <a class="nav-link" href="ejercicio2.php">Ejercicio 2</a>
   </li>
 </ul>
+</div>
 
 <?php
 include('footer.php');

@@ -66,6 +66,6 @@
       </div>
     </nav>
 
-    <div class="container text-center flex-grow-1 d-flex flex-column justify-content-center my-3">
+    <div class="container text-center flex-grow-1 d-flex flex-column justify-content-center my-5">
       <div class="row d-flex justify-content-center">
         <div class="col-12 col-sm-11 col-md-8 text-center">

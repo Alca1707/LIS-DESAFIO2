@@ -1,6 +1,13 @@
 window.onload = initForms;
+let autores = [];
 
 function initForms(){
+    if (localStorage.getItem('autores') !== null) {
+        autores = JSON.parse(localStorage.getItem('autores'));
+        autores.forEach(value => {
+            addAuthor(document.frmLibros.autores, value, false);
+        });
+    }
 
     var datoNombres;
     var datoApellidos;
@@ -29,7 +36,12 @@ function initForms(){
     }
 }
 
-function addAuthor(optionMenu, value){
+function addAuthor(optionMenu, value, push = true){
     var posicion = optionMenu.length;
     optionMenu[posicion] = new Option(value, value);
+
+    if (push) {
+        autores.push(value);
+        localStorage.setItem('autores', JSON.stringify(autores));
+    }
 }
