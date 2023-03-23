@@ -3,22 +3,30 @@ include('header.php');
 
 session_start();
 
-class Libro {
+class Libro
+{
     public $titulo;
-    private $numero_Edicion;
-    private $ciudad_Publicacion;
-    private $editorial;
-    private $edicion_Year;
-    private $numero_Paginas;
-    private $notas;
-    private $isbn;
+    public $numero_Edicion;
+    public $ciudad_Publicacion;
+    public $editorial;
+    public $edicion_Year;
+    public $numero_Paginas;
+    public $notas;
+    public $isbn;
 
-    private $autor;
+    public $autor;
 
-    function addBook($titulo, $edicion, $ciudad) {
+    function addBook($titulo, $edicion, $ciudad, $editorial, $edicion_Year, $numero_Paginas, $notas, $isbn, $autor)
+    {
         $this->titulo = $titulo;
         $this->numero_Edicion = $edicion;
         $this->ciudad_Publicacion = $ciudad;
+        $this->editorial = $editorial;
+        $this->edicion_Year = $edicion_Year;
+        $this->numero_Paginas = $numero_Paginas;
+        $this->notas = $notas;
+        $this->isbn = $isbn;
+        $this->autor = $autor;
     }
 }
 
@@ -32,25 +40,61 @@ if (isset($_SESSION['books'])) {
 
 if (isset($_POST['enviar'])) {
     $titulo = isset($_POST['titulo']) ? $_POST['titulo'] : '';
-    $numeroEdicion = isset($_POST['edicion']);
-    $ciudad = isset($_POST['ciudad']);
+    $numeroEdicion = isset($_POST['edicion']) ? $_POST['edicion'] : '';
+    $ciudad = isset($_POST['ciudad']) ? $_POST['ciudad'] : '';
+    $editorial = isset($_POST['editorial']) ? $_POST['editorial'] : '';
+    $edicion_Year = isset($_POST['edicionYear']) ? $_POST['edicionYear'] : '';
+    $numero_Paginas = isset($_POST['numeroPaginas']) ? $_POST['numeroPaginas'] : '';
+    $notas = isset($_POST['notas']) ? $_POST['notas'] : '';
+    $isbn = isset($_POST['isbn']) ? $_POST['isbn'] : '';
+    $autores = isset($_POST['autores']) ? $_POST['autores'] : [];
 
-    $newBook = new Libro();
-    $newBook->addBook($titulo, $numeroEdicion, $ciudad);
+    $validationResult = validateData($titulo, $numeroEdicion, $ciudad, $editorial, $edicion_Year, $numero_Paginas, $notas, $isbn, $autores);
 
-    array_push($books, $newBook);
+    if ($validationResult == "") {
+        $newBook = new Libro();
+        $newBook->addBook($titulo, $numeroEdicion, $ciudad, $editorial, $edicion_Year, $numero_Paginas, $notas, $isbn, $autores);
+        array_push($books, $newBook);
+    } else {
+        echo $validationResult;
+    }
 }
 
+function validateData($titulo, $numeroEdicion, $ciudad, $editorial, $edicion_Year, $numero_Paginas, $notas, $isbn, $autores) {
+    $errorMessage = "";
+    $wordsDigits = "/([^a-zA-Z&.,\d\s])/";
+    $digits = "/[^\d]/";
+
+    $errorMessage .= regexValidation($wordsDigits, $titulo, 'titulo');
+    $errorMessage .= regexValidation($wordsDigits, $editorial, 'editorial');
+    $errorMessage .= regexValidation($wordsDigits, $ciudad, 'lugar de publicacion');
+    $errorMessage .= regexValidation($digits, $numero_Paginas, 'número de página', 'deben ser solo digitos');
+    $errorMessage .= regexValidation($digits, $edicion_Year, 'año de edición', 'deben ser solo digitos');
+    $errorMessage .= regexValidation($digits, $numeroEdicion, 'número de edición', 'deben ser solo digitos');
+
+    if ($autores == null) {
+        $errorMessage .= "Debe seleccionar al menos un autor. <br>";
+    }
+
+    return $errorMessage;
+}
+
+function regexValidation($patron, $valor, $nombre, $tipo = "no son permitidos") {
+    if(preg_match($patron, $valor) > 0) {
+        return "Los carácteres en el $nombre $tipo. <br>";
+    }
+    return "";
+}
 
 $_SESSION['books'] = $books;
 ?>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 
 <h1 class="my-4">Inventario de biblioteca</h1>
 
 <form name="frmLibros" action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
-<h5 class="pb-2 text-uppercase">Agregar autores</h5>
+    <h5 class="pb-2 text-uppercase">Agregar autores</h5>
 
     <div class="form-floating mb-3">
         <input type="text" class="form-control" id="nombres" placeholder="Juan">
@@ -71,41 +115,41 @@ $_SESSION['books'] = $books;
 
     <div class="form-floating mb-3">
         <input type="text" class="form-control" id="titulo" placeholder="Juan Salvador Gaviota" name="titulo">
-        <label for="titulo">Titulo del libro</label>
+        <label for="titulo">Título del libro</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="edicion" placeholder="3">
-        <label for="edicion">Numero de edicion</label>
+        <input type="number" class="form-control" id="edicion" placeholder="3" name="edicion">
+        <label for="edicion">Número de edición</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="ciudad" placeholder="Nueva York">
-        <label for="ciudad">Lugar de publicacion</label>
+        <input type="text" class="form-control" id="ciudad" placeholder="Nueva York" name="ciudad">
+        <label for="ciudad">Lugar de publicación</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="editorial" placeholder="B&B Editorial">
+        <input type="text" class="form-control" id="editorial" placeholder="B&B Editorial" name="editorial">
         <label for="editorial">Editorial</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="number" class="form-control" id="edicionYear" placeholder="2005">
-        <label for="edicionYear">Ano de la edicion</label>
+        <input type="number" class="form-control" id="edicionYear" placeholder="2005" name="edicionYear">
+        <label for="edicionYear">Año de la edición</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="number" class="form-control" id="numeroPaginas" placeholder="248">
-        <label for="numeroPaginas">Numero de paginas</label>
+        <input type="number" class="form-control" id="numeroPaginas" placeholder="248" name="numeroPaginas">
+        <label for="numeroPaginas">Número de páginas</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="notas" placeholder="Libro para principiantes">
+        <input type="text" class="form-control" id="notas" placeholder="Libro para principiantes" name="notas">
         <label for="notas">Notas</label>
     </div>
 
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="isbn" placeholder="2837 2189 31321">
+        <input type="text" class="form-control" id="isbn" placeholder="2837 2189 31321" name="isbn">
         <label for="isbn">ISBN</label>
     </div>
 
@@ -118,30 +162,49 @@ $_SESSION['books'] = $books;
         <input type="submit" value="Agregar registro" class="btn btn-outline-dark fw-bold text-uppercase mt-3" name="enviar">
     </div>
 </form>
-
-    <div class="mt-3">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Titulo de libro</th>
-                    <th scope="col">Numero de edicion</th>
-                    <th scope="col">Lugar de edicion</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                        <?php
-                            echo '<td scope="col">';
-                                foreach ($books as $book) {
-                            echo $book->titulo;
-                        }
-                            echo '</td>';
-                        ?>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div class="mt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Título de libro</th>
+                <th scope="col">Número de edición</th>
+                <th scope="col">Lugar de edición</th>
+                <th scope="col">Editorial</th>
+                <th scope="col">Año de la edición</th>
+                <th scope="col">Número de páginas</th>
+                <th scope="col">Notas</th>
+                <th scope="col">ISBN</th>
+                <th scope="col">Autor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <?php
+                foreach ($books as $book) {
+                    echo '<tr>';
+                    echo '<td scope="col"> '.$book->titulo.' </td>';
+                    echo '<td scope="col"> '.$book->numero_Edicion.' </td>';
+                    echo '<td scope="col"> '.$book->ciudad_Publicacion.' </td>';
+                    echo '<td scope="col"> '.$book->editorial.' </td>';
+                    echo '<td scope="col"> '.$book->edicion_Year.' </td>';
+                    echo '<td scope="col"> '.$book->numero_Paginas.' </td>';
+                    echo '<td scope="col"> '.$book->notas.' </td>';
+                    echo '<td scope="col"> '.$book->isbn.' </td>';
+                    echo '<td scope="col"> ';
+                    foreach ($book->autor as $autor) {
+                        echo $autor." - ";
+                    }
+                    echo ' </td>';
+                    echo '</tr>';
+                }
+                ?>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <?php
+
 include('footer.php');
 ?>
